@@ -2,14 +2,14 @@ import { useRef, useState } from "react"
 import axios from "axios"
 function App() {
   const todo = useRef()
-  const [data,setData] = useState([{todo:'sf'}])
+  const [data, setData] = useState([{ todo: "sf" }])
   async function sendToDB() {
     try {
       const res = await axios.post("http://localhost:3000/create", {
         todo: todo.current.value,
       })
       setData((prev) => {
-        return [...prev,{todo:todo.current.value}]
+        return [...prev, { todo: todo.current.value }]
       })
     } catch (error) {
       console.log(error)
@@ -36,7 +36,9 @@ function App() {
         </button>
       </form>
       <ul>
-        { data.map(i => <li>{i.todo}</li>)}
+        {data.map((i) => (
+          <li>{i.todo}</li>
+        ))}
       </ul>
     </>
   )
