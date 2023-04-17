@@ -1,21 +1,38 @@
-import express from  'express'
-import cors from 'cors'
+import express from "express"
+import cors from "cors"
+import config from "./config/config.js"
+import mongoose from "mongoose"
+
 const app = express()
 app.use(express.json())
 app.use(cors())
-import mongoose from 'mongoose'
-mongoose
-  .connect("mongodb://127.0.0.1:27017/test")
-  .then(() => console.log("Connected!"))
+// (async () => {
+//   try {
+//     await mongoose.connect(config.MONGODB_URL)
+//     console.log("DB Connected")
+//     app.on("error", (err) => {
+//       console.log("ERROR:", err)
+//       throw err
+//     })
+//     app.listen(config.PORT, () =>
+//       console.log(`App listening on port ${config.PORT}`)
+//     )
+//   } catch (err) {
+//     console.error("ERROR: ", err)
+//   }
+// })()
 
-app.get('/', (req, res) => {
+mongoose.connect("mongodb://localhost:27017/todo")
 
-  res.status(200).send('hi')
+mongoose.connection.once("open", function () {
+  console.log("MongoDB database connection established successfully")
 })
 
-app.post('/create', (req, res) => {
-  console.log(req.body);
-  res.json({ data: req.body, sucess:true })
-  // User.create({name:'pratik'})
-})
-app.listen(3000)
+const Cat = mongoose.model("Cat", { name: String })
+
+const kitty = new Cat({ name: "Zildjian" })
+kitty.save().then(() => console.log("meow"))
+
+app.listen(config.PORT, () =>
+  console.log(`App listening on port ${config.PORT}`)
+)
