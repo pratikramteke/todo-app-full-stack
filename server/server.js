@@ -1,27 +1,28 @@
 import express from "express"
-import cors from "cors"
-import config from "./config/config.js"
 import mongoose from "mongoose"
+import User from "./model/schema.js"
+// const mongoose = require('mongoose')
+// const express = require('express')
+// const User = require('./model/schema.js')
 
 const app = express()
-app.use(express.json())
-app.use(cors())
-(async () => {
-  try {
-    await mongoose.connect(config.MONGODB_URL)
-    console.log("DB Connected")
-    app.on("error", (err) => {
-      console.log("ERROR:", err)
-      throw err
-    })
-    app.listen(config.PORT, () =>
-      console.log(`App listening on port ${config.PORT}`)
-    )
-  } catch (err) {
-    console.error("ERROR: ", err)
-  }
-})()
+mongoose
+  .connect("mongodb://0.0.0.0:27017/todo")
+  .then(() => console.log("connected"))
+  .catch((e) => console.log(e))
 
-app.listen(config.PORT, () =>
-  console.log(`App listening on port ${config.PORT}`)
-)
+app.get("/", (req, res) => res.send("welcome"))
+
+run()
+
+async function run() {
+  try {
+    const user = await User.create({ name: "pratik" })
+    console.log(user)
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+
+app.listen(3000)
