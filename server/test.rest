@@ -1,0 +1,23 @@
+GET http://localhost:3000/getTodo
+
+###
+
+POST http://localhost:3000/createTodo
+Content-Type: application/json
+
+{
+  "todo":"first todo"
+}
+
+###
+
+PUT http://localhost:3000/editTodo/644a1f89550412ebcbb129e4
+Content-Type: application/json
+
+{
+  "todo":"pratik"
+}
+
+###
+
+DELETE  http://localhost:3000/deleteTodo/64492fd4c4ac42bd7d45d30f

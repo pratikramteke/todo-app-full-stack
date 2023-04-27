@@ -1,24 +1,49 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import axios from "axios"
+let flag=true
+let id
 function App() {
   const todo = useRef()
-  const [data, setData] = useState([{ todo: "sf" }])
+  const [data, setData] = useState([])
+  function newji(i) {
+    id=i
+  }
+
+  async function getcases() {
+    const res = await axios.get("http://localhost:3000/getTodo")
+    setData(res.data.users)
+  }
+
+  useEffect(() => {
+    getcases()
+  }, [])
+
   async function sendToDB() {
     try {
-      const res = await axios.post("http://localhost:3000/create", {
-        todo: todo.current.value,
-      })
-      setData((prev) => {
-        return [...prev, { todo: todo.current.value }]
-      })
-    } catch (error) {
-      console.log(error)
-    }
+      if (flag) {
+        const res = await axios.post("http://localhost:3000/createTodo", {
+          todo: todo.current.value,
+        })
+      } else {
+        
+      
+
+        await axios.put(`http://localhost:3000/editTodo/${id}`, {
+          todo: todo.current.value,
+        })
+        flag=true
+      }
+    
+
+      } catch (error) {
+        console.log(error)
+      }
+    getcases()
   }
 
   function addTodo(e) {
     e.preventDefault()
-    sendToDB()
+    todo.current.value && sendToDB()
     todo.current.value = ""
   }
   return (
@@ -37,7 +62,29 @@ function App() {
       </form>
       <ul>
         {data.map((i) => (
-          <li>{i.todo}</li>
+          <div key={i._id}>
+            <span>{i.todo}</span>
+            <button
+              className="mx-4 my-1 border border-black border-1"
+              onClick={async () => {
+                todo.current.value = i.todo
+                flag=false
+                newji(i._id)
+                getcases()
+              }}
+            >
+              Edit
+            </button>
+            <button
+              className="mx-4 my-1 border border-black border-1"
+              onClick={async () => {
+                await axios.delete(`http://localhost:3000/deleteTodo/${i._id}`)
+                getcases()
+              }}
+            >
+              Delete
+            </button>
+          </div>
         ))}
       </ul>
     </>

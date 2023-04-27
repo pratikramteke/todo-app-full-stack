@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
-const data=mongoose.Schema({
-  name:String
+const todo = mongoose.Schema({
+  todo: String,
 })
 
-export default mongoose.model('User',data)
+export default mongoose.model("User", todo)
